@@ -872,6 +872,13 @@ class GenerationConfig(FairseqDataclass):
         default=False,
         metadata={"help": "if set, dont use seed for initializing random generators"},
     )
+    # tda generation cfg
+    tda_task_type: str = field(
+        default="st", metadata={"help": "task type: st or asr"},
+    )
+    tda_decoding_direction: str = field(
+        default="st_asr", metadata={"help": "task type: st_asr or asr_st"},
+    )
 
 
 @dataclass

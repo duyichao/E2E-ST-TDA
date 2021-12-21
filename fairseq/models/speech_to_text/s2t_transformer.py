@@ -24,7 +24,6 @@ from fairseq.modules import (
 )
 from torch import Tensor
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -41,11 +40,11 @@ class Conv1dSubsampler(nn.Module):
     """
 
     def __init__(
-        self,
-        in_channels: int,
-        mid_channels: int,
-        out_channels: int,
-        kernel_sizes: List[int] = (3, 3),
+            self,
+            in_channels: int,
+            mid_channels: int,
+            out_channels: int,
+            kernel_sizes: List[int] = (3, 3),
     ):
         super(Conv1dSubsampler, self).__init__()
         self.n_layers = len(kernel_sizes)
@@ -249,10 +248,10 @@ class S2TTransformerModel(FairseqEncoderDecoderModel):
         return cls(encoder, decoder)
 
     def get_normalized_probs(
-        self,
-        net_output: Tuple[Tensor, Optional[Dict[str, List[Optional[Tensor]]]]],
-        log_probs: bool,
-        sample: Optional[Dict[str, Tensor]] = None,
+            self,
+            net_output: Tuple[Tensor, Optional[Dict[str, List[Optional[Tensor]]]]],
+            log_probs: bool,
+            sample: Optional[Dict[str, Tensor]] = None,
     ):
         # net_output['encoder_out'] is a (B, T, D) tensor
         lprobs = self.get_normalized_probs_scriptable(net_output, log_probs, sample)
@@ -378,13 +377,13 @@ class S2TTransformerEncoder(FairseqEncoder):
 
 class TransformerDecoderScriptable(TransformerDecoder):
     def extract_features(
-        self,
-        prev_output_tokens,
-        encoder_out: Optional[Dict[str, List[Tensor]]] = None,
-        incremental_state: Optional[Dict[str, Dict[str, Optional[Tensor]]]] = None,
-        full_context_alignment: bool = False,
-        alignment_layer: Optional[int] = None,
-        alignment_heads: Optional[int] = None,
+            self,
+            prev_output_tokens,
+            encoder_out: Optional[Dict[str, List[Tensor]]] = None,
+            incremental_state: Optional[Dict[str, Dict[str, Optional[Tensor]]]] = None,
+            full_context_alignment: bool = False,
+            alignment_layer: Optional[int] = None,
+            alignment_heads: Optional[int] = None,
     ):
         # call scriptable method from parent class
         x, _ = self.extract_features_scriptable(
@@ -494,4 +493,29 @@ def s2t_transformer_l(args):
 @register_model_architecture("s2t_transformer", "s2t_transformer_lp")
 def s2t_transformer_lp(args):
     args.encoder_layers = getattr(args, "encoder_layers", 16)
+    s2t_transformer_l(args)
+
+
+@register_model_architecture("s2t_transformer", "s2t_transformer_tda_s")
+def s2t_transformer_tda_s(args):
+    s2t_transformer_s(args)
+
+
+@register_model_architecture("s2t_transformer", "s2t_transformer_tda_m")
+def s2t_transformer_tda_m(args):
+    s2t_transformer_m(args)
+
+
+@register_model_architecture("s2t_transformer", "s2t_transformer_tda_l")
+def s2t_transformer_tda_m2(args):
+    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 768)
+    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 768 * 4)
+    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 12)
+    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 12)
+    args.dropout = getattr(args, "dropout", 0.2)
+    base_architecture(args)
+
+
+@register_model_architecture("s2t_transformer", "s2t_transformer_tda_xl")
+def s2t_transformer_tda_l(args):
     s2t_transformer_l(args)
