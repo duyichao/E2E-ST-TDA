@@ -4,7 +4,7 @@
 @mail: ycdu666@gmail.com
 @IDE: PyCharm
 @file: generate_tda.py
-@time: 2021/12/18 9:44 下午
+@time: 2021/12/18 9:44
 @desc: 
 """
 
@@ -28,8 +28,6 @@ from omegaconf import DictConfig
 def main(cfg: DictConfig):
     if isinstance(cfg, Namespace):
         cfg = convert_namespace_to_omegaconf(cfg)
-    print(cfg.task)
-    exit()
 
     assert cfg.common_eval.path is not None, "--path required for generation!"
     assert (
@@ -261,17 +259,17 @@ def _main(cfg: DictConfig, output_file):
 
             # Process top predictions
             for j, hypo in enumerate(hypos[i][: cfg.generation.nbest]):
+                src_lang_idx = tgt_dict.index("<2en>")
+                tgt_lang_idx = tgt_dict.index("<2{}>".format(cfg.task.speech_tgt_lang))
                 if cfg.generation.tda_task_type == "st":
                     if cfg.generation.tda_decoding_direction == "st_asr":
                         # ST hypo["tokens"]:  <tgt> y1 y2... <en> x1 x2 ... —> truncate <tgt> y1 y2... <en>
-                        src_lang_idx = tgt_dict.index("<2en>")
                         src_lang_idx_in_hypo = np.argwhere(hypo["tokens"].int().cpu() == src_lang_idx)
                         if src_lang_idx_in_hypo.size(1) > 0:
                             tmp = hypo["tokens"][:src_lang_idx_in_hypo[0][0]]
                             hypo["tokens"] = torch.cat((tmp, torch.LongTensor([tgt_dict.eos()]).to(tmp)), 0)
                     elif cfg.generation.tda_decoding_direction == "asr_st":
                         # ST hypo["tokens"]: <en> x1 x2 ... <tgt> y1 y2... —> truncate <tgt> y1 y2... tst-COMMON_st1
-                        tgt_lang_idx = tgt_dict.index("<2de>")
                         tgt_lang_idx_in_hypo = np.argwhere(hypo["tokens"].int().cpu() == tgt_lang_idx)
                         if tgt_lang_idx_in_hypo.size(1) > 0:
                             tmp = hypo["tokens"][tgt_lang_idx_in_hypo:]
@@ -279,7 +277,6 @@ def _main(cfg: DictConfig, output_file):
                 elif cfg.generation.tda_task_type == "asr":
                     if cfg.generation.tda_decoding_direction == "asr_st":
                         # ASR hypo["tokens"]: <en> x1 x2 ... <tgt> y1 y2... —> truncate <en> x1 x2 ... # tst-COMMON_asr
-                        tgt_lang_idx = tgt_dict.index("<2de>")
                         tgt_lang_idx_in_hypo = np.argwhere(hypo["tokens"].int().cpu() == tgt_lang_idx)
                         # print(hypo["tokens"], tgt_lang_idx_in_hypo)
                         if tgt_lang_idx_in_hypo.size(1) > 0:
@@ -288,7 +285,6 @@ def _main(cfg: DictConfig, output_file):
                             hypo["tokens"] = torch.cat((tmp, torch.LongTensor([tgt_dict.eos()]).to(tmp)), 0)
                     elif cfg.generation.tda_decoding_direction == "st_asr":
                         # ASR de en tst-COMMON_asr1
-                        src_lang_idx = tgt_dict.index("<2en>")
                         src_lang_idx_in_hypo = np.argwhere(hypo["tokens"].int().cpu() == src_lang_idx)
                         if src_lang_idx_in_hypo.size(1) > 0:
                             tmp = hypo["tokens"][src_lang_idx_in_hypo:]

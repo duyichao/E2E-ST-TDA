@@ -45,8 +45,8 @@ pip install --editable ./
 ```text
 fairseq
 ├── data
-│    ├──/audio/
-│        └── speech_to_text_tda_datasets.py
+│    ├── audio
+│         └── speech_to_text_tda_datasets.py
 ├── tasks
 │    └── speech_to_text_tda.py
 ├── criterions
