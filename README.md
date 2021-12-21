@@ -118,7 +118,7 @@ CUDA_VISIBLE_DEVICES=${CUDA_IDS} \
   --tensorboard-logdir ${ST_SAVE_DIR}/tensorboard 
 ```
 
-where `ST_SAVE_DIR`is the checkpoint root path. The ST encoder is pre-trained by ASR for faster training and better performance: `--load-pretrained-encoder-from <ASR_SAVE_DIR/ASR_CHECKPOINT_FILENAME>`. We set `--update-freq 4` to simulate 4 GPUs with 1 GPU.  We add the target language tag `<2de>/<2en>` as the target BOS to distinguish the `ST-BT` path and the `ASR-MT` path, specifically, we set `--ignore-prefix-size 1`.
+where `ST_SAVE_DIR`is the checkpoint root path. The ST encoder is pre-trained by ASR for faster training and better performance: `--load-pretrained-encoder-from <ASR_SAVE_DIR/ASR_CHECKPOINT_FILENAME>`. We set `--update-freq 4` to simulate 4 GPUs with 1 GPU.  We add the target language tag `<2de>/<2en>` as the target BOS to distinguish the `ST-BT` path and the `ASR-MT` path, specifically, we set `--ignore-prefix-size 1`. Detailed training scripts can be found in `E2E-ST-TDA/mymcripts/train_tda.sh`.
 
 ## Inference
 
@@ -137,7 +137,7 @@ if [ ${GEN_TASK} == "st" ]; then
   CUDA_VISIBLE_DEVICES=${CUDA_IDS}, \
     python ${GEN_SCRIPTS}/generate_tda.py  ${MUSTC_ROOT}/en-${TGT_LANG}/kl_joint_data \
     --config-yaml config_joint.yaml --gen-subset ${GEN_SUBSET} --task speech_to_text_tda \
-    --path ${ST_SAVE_DIR}/${CHECKPOINT_FILENAME} --prefix-size 1 \
+    --path ${ST_SAVE_DIR}/${CHECKPOINT_FILENAME} --prefix-size 1 --speech-tgt-lang ${TGT_LANG} \
     --tda-task-type ${GEN_TASK} --tda-decoding-direction ${GEN_DIRECTION} \
     --max-tokens 50000 --beam 5 --scoring sacrebleu \
     --quiet
@@ -150,11 +150,11 @@ elif [ ${GEN_TASK} == "asr" ]; then
   CUDA_VISIBLE_DEVICES=${CUDA_IDS} \
     python ${GEN_SCRIPTS}/generate_tda.py ${MUSTC_ROOT}/en-${TGT_LANG}/kl_joint_data \
     --config-yaml config_joint.yaml --gen-subset ${GEN_SUBSET} --task speech_to_text_tda \
-    --path ${ST_SAVE_DIR}/${CHECKPOINT_FILENAME} \
+    --path ${ST_SAVE_DIR}/${CHECKPOINT_FILENAME} --speech-tgt-lang ${TGT_LANG} \
     --prefix-size 1 --max-tokens 50000 --scoring wer --wer-tokenizer 13a \
     --tda-task-type ${GEN_TASK} --tda-decoding-direction ${GEN_DIRECTION} \
     --quiet
 fi
 ```
 
- For inference, we force decoding from the target language tag (as BOS) via `--prefix-size 1`. We also provide well-trained [models and vocabularies](https://drive.google.com/drive/folders/1WDgue_Bm1HxRmpKVf_mAmz0rbdUKQMox?usp=sharing) files for reproduction.
+For inference, we force decoding from the target language tag (as BOS) via `--prefix-size 1`. We also provide well-trained [models and vocabularies](https://drive.google.com/drive/folders/1WDgue_Bm1HxRmpKVf_mAmz0rbdUKQMox?usp=sharing) files for reproduction. Note that some parameters may need to be overridden using `--model-overrides '{"key":"value"}'`. Detailed inference scripts can be found in `E2E-ST-TDA/mymcripts/eval_tda.sh`.
