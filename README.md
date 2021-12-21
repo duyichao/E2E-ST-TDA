@@ -6,11 +6,11 @@ We evaluate the E2E-ST performance of our proposed approach (E2E-ST-TDA) on the 
 
 ### ST Results
 
-| Model          | Params. |    Extra.    | En-De | En-Fr | En-Ru | En-Es | En-It | En-Ro | En-Pt | En-Nl | Avg. |
-| :------------- | :-----: | :----------: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--: |
-| E2E-ST-TDA$^s$ |   32M   |   $\times$   | 24.3  | 34.6  | 15.9  | 28.3  | 24.2  | 23.4  | 30.3  | 28.7  | 26.2 |
-| E2E-ST-TDA$^m$ |   76M   |   $\times$   | 25.4  | 36.1  | 16.4  | 29.6  | 25.1  | 23.9  | 31.1  | 29.6  | 27.2 |
-| E2E-ST-TDA$^m$ |   76M   | $\checkmark$ | 27.1  | 37.4  |   —   |   —   |   —   |   —   |   —   |   —   |  —   |
+| Model          | Params. | Extra. | En-De | En-Fr | En-Ru | En-Es | En-It | En-Ro | En-Pt | En-Nl | Avg. |
+| :------------- | :-----: | :----: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--: |
+| E2E-ST-TDA$^s$ |   32M   |   ✗    | 24.3  | 34.6  | 15.9  | 28.3  | 24.2  | 23.4  | 30.3  | 28.7  | 26.2 |
+| E2E-ST-TDA$^m$ |   76M   |   ✗    | 25.4  | 36.1  | 16.4  | 29.6  | 25.1  | 23.9  | 31.1  | 29.6  | 27.2 |
+| E2E-ST-TDA$^m$ |   76M   |   ✔️    | 27.1  | 37.4  |   —   |   —   |   —   |   —   |   —   |   —   |  —   |
 
 ### ASR Results
 
