@@ -5,6 +5,7 @@ Official implementation of AAAI'2022 paper "Regularizing End-to-End Speech Trans
 We evaluate the E2E-ST performance of our proposed approach (E2E-ST-TDA) on the MuST-C dataset with 8 languages, the results are as follows:
 
 ### ST Results
+The case-sensitive BLEU scores on MuST-C tst-COMMON set. 
 
 | Model          | Params. | Extra. | En-De | En-Fr | En-Ru | En-Es | En-It | En-Ro | En-Pt | En-Nl | Avg. |
 | :------------- | :-----: | :----: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--: |
@@ -13,6 +14,8 @@ We evaluate the E2E-ST performance of our proposed approach (E2E-ST-TDA) on the 
 | E2E-ST-TDA$^m$ |   76M   |   ✔️    | 27.1  | 37.4  |   —   |   —   |   —   |   —   |   —   |   —   |  —   |
 
 ### ASR Results
+
+The case-sensitive WER scores on MuST-C tst-COMMON set. 
 
 | Model          | En-De | En-Fr | En-Ru | En-Es | En-It | En-Ro | En-Pt | En-Nl | Avg. |
 | :------------- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--: |
@@ -115,7 +118,7 @@ CUDA_VISIBLE_DEVICES=${CUDA_IDS} \
   --tensorboard-logdir ${ST_SAVE_DIR}/tensorboard 
 ```
 
-where `ST_SAVE_DIR`is the checkpoint root path. The ST encoder is pre-trained by ASR for faster training and better performance: `--load-pretrained-encoder-from <ASR_SAVE_DIR/ASR_CHECKPOINT_FILENAME>`. We set `--update-freq 8` to simulate 8 GPUs with 1 GPU.  We add the target language tag `<2de>/<2en>` as the target BOS to distinguish the ST-BT path and the ASR-MT path, specifically, we set `--ignore-prefix-size 1`.
+where `ST_SAVE_DIR`is the checkpoint root path. The ST encoder is pre-trained by ASR for faster training and better performance: `--load-pretrained-encoder-from <ASR_SAVE_DIR/ASR_CHECKPOINT_FILENAME>`. We set `--update-freq 4` to simulate 4 GPUs with 1 GPU.  We add the target language tag `<2de>/<2en>` as the target BOS to distinguish the `ST-BT` path and the `ASR-MT` path, specifically, we set `--ignore-prefix-size 1`.
 
 ## Inference
 
