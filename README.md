@@ -22,6 +22,7 @@ The case-sensitive WER scores on MuST-C tst-COMMON set.
 | E2E-ST-TDA$^s$ | 16.4  | 15.6  | 16.6  | 16.4  | 16.2  | 16.6  | 16.9  | 16.2  | 16.4 |
 | E2E-ST-TDA$^m$ | 14.9  | 14.1  | 15.7  | 14.4  | 15.2  | 15.4  | 16.5  | 14.9  | 15.1 |
 
+
 ## Requirements and Insallation
 
 * python = 3.6
@@ -62,12 +63,13 @@ myscripts
 ├── eval_tda.sh
 ```
 
-## Instructions
-### Preparations and Configurations
-#### Pretrained ASR Model
+# Instructions
+
+## Preparations and Configuration
+### Pretrained ASR Model
 The pre-trained ASR model can be found at [Fairseq S2T MuST-C Example](https://github.com/pytorch/fairseq/blob/main/examples/speech_to_text/docs/mustc_example.md).
 
-#### Training Data
+### Training Data
 
 The TSV manifests we used are different from Fairseq S2T MuST-C Example, as follows:
 
@@ -76,7 +78,7 @@ id	audio	n_frames	speaker	src_lang	src_text	tgt_lang	tgt_text
 ted_1_0	/data/share/ycdu/data/mustc/en-de/fbank80.zip:41:51328	160	spk.1	en	There was no motorcade back there.	de	Hinter mir war gar keine Autokolonne.
 ```
 
-#### Config File
+### Config File
 
 ```yaml
 bpe_tokenizer:
@@ -118,7 +120,7 @@ CUDA_VISIBLE_DEVICES=${CUDA_IDS} \
   --tensorboard-logdir ${ST_SAVE_DIR}/tensorboard 
 ```
 
-where `ST_SAVE_DIR`is the checkpoint root path. The ST encoder is pre-trained by ASR for faster training and better performance: `--load-pretrained-encoder-from <ASR_SAVE_DIR/ASR_CHECKPOINT_FILENAME>`. We set `--update-freq 4` to simulate 4 GPUs with 1 GPU.  We add the target language tag `<2de>/<2en>` as the target BOS to distinguish the `ST-BT` path and the `ASR-MT` path, specifically, we set `--ignore-prefix-size 1`. Detailed training scripts can be found in `E2E-ST-TDA/mymcripts/train_tda.sh`.
+where `ST_SAVE_DIR`is the checkpoint root path. The ST encoder is pre-trained by ASR for faster training and better performance: `--load-pretrained-encoder-from <ASR_SAVE_DIR/ASR_CHECKPOINT_FILENAME>`. We set `--update-freq 4` to simulate 4 GPUs with 1 GPU.  We add the target language tag `<2de>/<2en>` as the target BOS to distinguish the `ST-BT` path and the `ASR-MT` path, specifically, we set `--ignore-prefix-size 1`. Detailed training script can be found in `E2E-ST-TDA/mymcripts/train_tda.sh`.
 
 ## Inference
 
@@ -157,4 +159,4 @@ elif [ ${GEN_TASK} == "asr" ]; then
 fi
 ```
 
-For inference, we force decoding from the target language tag (as BOS) via `--prefix-size 1`. We also provide well-trained [models and vocabularies](https://drive.google.com/drive/folders/1WDgue_Bm1HxRmpKVf_mAmz0rbdUKQMox?usp=sharing) files for reproduction. Note that some parameters may need to be overridden using `--model-overrides '{"key":"value"}'`. Detailed inference scripts can be found in `E2E-ST-TDA/mymcripts/eval_tda.sh`.
+For inference, we force decoding from the target language tag (as BOS) via `--prefix-size 1`. We also provide well-trained [models and vocabularies](https://drive.google.com/drive/folders/1WDgue_Bm1HxRmpKVf_mAmz0rbdUKQMox?usp=sharing) files for reproduction. Note that some parameters may need to be overridden using `--model-overrides '{"key":"value"}'`. Detailed inference script can be found in `E2E-ST-TDA/mymcripts/eval_tda.sh`.
