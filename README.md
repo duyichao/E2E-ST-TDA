@@ -1,5 +1,16 @@
 Official implementation of AAAI'2022 paper "Regularizing End-to-End Speech Translation with Triangular Decomposition Agreement"
 
+## Citation
+Please cite our paper if you find this repository helpful in your research:
+```
+@article{du2021regularizing,
+  title={Regularizing End-to-End Speech Translation with Triangular Decomposition Agreement},
+  author={Du, Yichao and Zhang, Zhirui and Wang, Weizhi and Chen, Boxing and Xie, Jun and Xu, Tong},
+  journal={arXiv preprint arXiv:2112.10991},
+  year={2021}
+}
+```
+
 ## Main Results
 
 We evaluate the E2E-ST performance of our proposed approach (E2E-ST-TDA) on the MuST-C dataset with 8 languages, the results are as follows:
